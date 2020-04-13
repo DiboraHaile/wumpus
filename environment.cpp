@@ -8,10 +8,20 @@
 using namespace std;
 
 environment:: environment(){
-    position agent_pos;
+    perception env_percept;
+    position ok_room_pos;
     Agent my_agent = Agent();
-    agent_pos = my_agent.current_pos;
-    display_envt(agent_pos);
+    env_percept = display_envt(my_agent.current_pos);
+    while(!my_agent.okay_rooms.empty()){
+        ok_room_pos = my_agent.okay_rooms.top();
+
+        my_agent.current_pos = my_agent.Move(ok_room_pos);
+        my_agent.update_history(env_percept,my_agent.current_pos);
+        my_agent.Decide(my_agent.agent_history,my_agent.current_pos);
+
+        
+    }
+
      
 }
 position environment::generate_random(){
@@ -34,9 +44,7 @@ pos_arr environment::generate_positions(){
         // leave 0,0 1,0 and 0,1 empty
        
         array.arr[k].x = generate_random().x;
-        array.arr[k].y = generate_random().y;
-        //cout<<"the values generated at first with k "<<k<<"\n";
-        
+        array.arr[k].y = generate_random().y;       
         //generate unique numbers
        
         for (int i = 0;i<k;i++){
@@ -47,14 +55,7 @@ pos_arr environment::generate_positions(){
             array.arr[k].y = generate_random().y;
             
             }
-            //cout<<"the values generated corrected with i "<<i<<"\n";
-        //cout<<array.arr[k].x;
-        //cout<<array.arr[k].y; 
-        //cout<<"\n";
         }
-        //cout<<array.arr[k].x;
-        //cout<<array.arr[k].y;   
-        //cout<<"\n";s
     }
     return array;
 }
@@ -86,12 +87,14 @@ stack<position> environment::neighbours(position pos){
     return neighs;
 
 }
-void environment::display_envt(position agent_pos){
+perception environment::display_envt(position agent_pos){
     srand(time(0));
     pos_arr pos;  
     stack<position> neigh_stack;
     int t = 0;
     position popped_neighbour;
+    perception env_perception;
+    char ele[5] = {'G','W','P','P','P'};
     pos = generate_positions();
 
 
@@ -105,24 +108,34 @@ for (int i=0;i<4;i++){
 for (int t=0;t<5;t++){
     grid [pos.arr[t].x][pos.arr[t].y] = ele[t];
     neigh_stack = neighbours(pos.arr[t]);
+    // set environment elements W,P,G
+    if (ele[t] == 'W')
+        env_perception.W.push_back(pos.arr[t]);
+    else if (ele[t] == 'G')
+        env_perception.G.push_back(pos.arr[t]);
+    else if (ele[t] == 'P')
+        env_perception.P.push_back(pos.arr[t]);
+    // set environment perceptions S,B
     while(!neigh_stack.empty()){
         popped_neighbour = neigh_stack.top();
         neigh_stack.pop();
-        if (ele[t] == 'P'){            
+        if (ele[t] == 'P'){       
+            env_perception.B.push_back(popped_neighbour);
             if ((grid[popped_neighbour.x][popped_neighbour.y]) == "0")
                 grid[popped_neighbour.x][popped_neighbour.y] = "b";
             else if ((grid[popped_neighbour.x][popped_neighbour.y]) != "b")
                 grid[popped_neighbour.x][popped_neighbour.y] += "b";           
         }        
-                //Rules(P,'p');
+
             
         else if (ele[t] == 'W'){
+            env_perception.W.push_back(pos.arr[t]);
             if ((grid[popped_neighbour.x][popped_neighbour.y]) == "0")
                 grid[popped_neighbour.x][popped_neighbour.y] = "s";
             else if ((grid[popped_neighbour.x][popped_neighbour.y]) != "s")
                 grid[popped_neighbour.x][popped_neighbour.y] += "s";
         }
-            //Rules(W,'w');
+  
         else
         {
             
@@ -158,9 +171,7 @@ int environment::print_msg(string msg){
     return 0;
 }
 
-vector<char> element_in_room(position current_pos){
 
-}
 
 
 
