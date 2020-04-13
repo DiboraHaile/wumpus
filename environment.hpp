@@ -15,12 +15,17 @@ struct pos_arr{
     position arr[5];
 };
 
+struct perception{
+        vector<position> S;
+        vector<position> B;
+        vector<position> P;
+        vector<position> W;
+        vector<position> G;
+    };
 
 class environment{
     public:
     string grid[4][4];
-    char ele[5] = {'G','W','P','P','P'};
-    position G, W, P;
     
     environment();
 
@@ -30,7 +35,7 @@ class environment{
 
     stack<position> neighbours(position pos);
 
-    void display_envt(position agent_pos);
+    perception display_envt(position agent_pos);
 
     void print_agent(position current_pos);
 
