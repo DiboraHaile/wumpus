@@ -18,28 +18,27 @@ class Agent{
         bool S[4][4];
         bool B[4][4];
         bool V[4][4];
+        bool P[4][4];
         bool Ok[4][4];
         bool W[4][4];
         bool G[4][4];
     };
 
-    struct pos{
-        int x;
-        int y;
-    };
-
-    history hist_agent;
-    stack<pos> okay_rooms;
+  
+    
+    history agent_history;
+    stack<position> okay_rooms;
+    stack<position> visited_rooms;
+    position current_pos;
     
     Agent();
-    void Senses(pos current_pos);
+    
+    position Move (position destination_pos);
+    
+    void Actuates(position position,string element);
 
-    pos Move (pos destination_pos);
-    // gives us position of 
-    void Actuates(pos position,string element);
+    void update_history(perception env_percept,position current_pos);
 
-    void initialize_movt();
-
-    void Decide(history);
+    void Decide(history a_hist, position cur_pos);
 
 };
