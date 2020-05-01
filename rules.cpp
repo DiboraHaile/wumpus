@@ -101,7 +101,7 @@ void Rules(position pos_ele,string name){
     string rule1,rule2,s_or_b;
     stack<position> neighs;
     neighs = neighbours(pos_ele);
-    cout<<neighs.size()<<"\n";
+    //cout<<neighs.size()<<"\n";
     if (name == "w")
         s_or_b = "s";
     else if (name == "p")
@@ -128,35 +128,71 @@ void Rules(position pos_ele,string name){
     }
 
 
-void check_pit(position cur_pos,position neigh_pos,history hist_agent){
+string check_pit(position cur_pos,position neigh_pos,history hist_agent){
     vector<queue<string>> statement;
     string conclusion;
+    bool no_pit;
     Rules(cur_pos,"p");
     
     auto pos = form_argument(cur_pos,return_history_pos(cur_pos,hist_agent)).find('b');
     if (pos->second.length() > 4){
         statement.push_back(r1);
-        conclusion = "p"+to_string(cur_pos.x)+to_string(cur_pos.y)+",not,";
+        conclusion = "p"+to_string(neigh_pos.x)+to_string(neigh_pos.y)+",not,";
+        no_pit = true;
     }
     else{
         statement.push_back(r2);
-        conclusion = "p"+to_string(cur_pos.x)+to_string(cur_pos.y)+",";
+        conclusion = "p"+to_string(neigh_pos.x)+to_string(neigh_pos.y)+",";
+        no_pit = false;
     }
     statement.push_back(separate_arg_elements(pos->second).cont);
     statement.push_back(separate_arg_elements(conclusion).cont);
-    cout<<tablox(statement);
+    if(tablox(statement) and no_pit)
+        return "no_pit";
+    else if(tablox(statement))
+        return "pit";
+    else if(!tablox(statement))
+        return "uncertain";
     //statement.push_back(form_argument(cur_pos));
 
     // insert to the tablox r1 and notbneigh_pos if not b
     
     
 }
-bool no_wumpus(position cur_pos){
+string check_wumpus(position cur_pos,position neigh_pos,history hist_agent){
+    vector<queue<string>> statement;
+    string conclusion;
+    bool no_wumpus;
+    Rules(cur_pos,"w");
+    
+    auto pos = form_argument(cur_pos,return_history_pos(cur_pos,hist_agent)).find('s');
+    if (pos->second.length() > 4){
+        statement.push_back(r1);
+        conclusion = "w"+to_string(neigh_pos.x)+to_string(neigh_pos.y)+",not,";
+        no_wumpus = true;
+    }
+    else{
+        statement.push_back(r2);
+        conclusion = "w"+to_string(neigh_pos.x)+to_string(neigh_pos.y)+",";
+        no_wumpus = false;
+    }
+    statement.push_back(separate_arg_elements(pos->second).cont);
+    statement.push_back(separate_arg_elements(conclusion).cont);
+    if(tablox(statement) and no_wumpus)
+        return "no_wumpus";
+    else if(tablox(statement))
+        return "wumpus";
+    else if(!tablox(statement))
+        return "uncertain";
+    //statement.push_back(form_argument(cur_pos));
 
-    return false;
-
+    // insert to the tablox r1 and notbneigh_pos if not b
+    
+    
 }
 
+
+/*
 int main(){
     position t;
     t.x = 0;
@@ -175,4 +211,4 @@ int main(){
     check_pit(t,t_1,hist_agent);
 
     //cout<<str_bool("true");
-}
+}*/
