@@ -24,6 +24,9 @@ struct perception{
         vector<position> G;
     };
 
+void display_envt(perception env, position cur_p);
+
+//perception env_percept;
 void delay(int number_of_seconds);
 class environment{
     public:
@@ -35,7 +38,7 @@ class environment{
 
     stack<position> neighbours(position pos);
 
-    perception display_envt(position agent_pos);
+    perception create_envt(position agent_pos);
 
     void print_agent(position current_pos);
 
