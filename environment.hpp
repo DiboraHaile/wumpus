@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h> 
 #include <stack>
+#include <vector>
 using namespace std;
 
 struct position{
@@ -23,13 +24,12 @@ struct perception{
         vector<position> G;
     };
 
+void delay(int number_of_seconds);
 class environment{
     public:
     string grid[4][4];
     
     environment();
-
-    position generate_random();
 
     pos_arr generate_positions();
 
