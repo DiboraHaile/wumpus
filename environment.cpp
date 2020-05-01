@@ -2,6 +2,8 @@
 #include <string>
 #include <stdlib.h>
 #include <time.h> 
+#include <stdio.h> 
+#include <vector>
 #include "environment.hpp"
 //#include "rules.hpp"
 #include "agent.hpp"
@@ -10,53 +12,49 @@ using namespace std;
 environment:: environment(){
     perception env_percept;
     position ok_room_pos;
+    // creating an agent
     Agent my_agent = Agent();
     env_percept = display_envt(my_agent.current_pos);
-    while(!my_agent.okay_rooms.empty()){
+    //while(!my_agent.okay_rooms.empty()){
         ok_room_pos = my_agent.okay_rooms.top();
-
         my_agent.current_pos = my_agent.Move(ok_room_pos);
         my_agent.update_history(env_percept,my_agent.current_pos);
+        //cout<<my_agent.agent_history.B[my_agent.current_pos.x][my_agent.current_pos.y]<<"\n";
         my_agent.Decide(my_agent.agent_history,my_agent.current_pos);
-
+        my_agent.okay_rooms.pop();
+        delay(1);
         
-    }
-
+    //}
+    // if out of this loop means okay rooms is empty
+    // so we call decide with the element empty
+    my_agent.Actuates(my_agent.current_pos,"empty");
      
 }
-position environment::generate_random(){
-    position generate_pos;
-    generate_pos.x= rand() % 4;
-    if (generate_pos.x == 0)
-    generate_pos.y= (rand() % 2)+2;
-    else if (generate_pos.x == 1)
-    generate_pos.y= (rand() % 3)+1;
-    else
-    generate_pos.y= rand() % 4;
 
-    return generate_pos;
-
-}
 pos_arr environment::generate_positions(){
     pos_arr array; 
+    position generated_pos,pos;
+    vector<position> generate_from;
+    vector<position>::iterator it; 
+    for(int i=0;i<4;i++)
+        for(int j=0;j<4;j++){
+            pos.x = i;
+            pos.y = j;
+            if(!(pos.x == 0 and pos.y == 0) and !(pos.x == 0 and pos.y == 1)and !(pos.x == 1 and pos.y == 0))
+            generate_from.push_back(pos);
+        }
 
+int ind;
     for (int k=0;k<5;k++){
         // leave 0,0 1,0 and 0,1 empty
-       
-        array.arr[k].x = generate_random().x;
-        array.arr[k].y = generate_random().y;       
-        //generate unique numbers
-       
-        for (int i = 0;i<k;i++){
-            while (array.arr[k].x == array.arr[i].x and array.arr[k].y == array.arr[i].y)
-            {
+            srand(time(0));
             
-            array.arr[k].x = generate_random().x;
-            array.arr[k].y = generate_random().y;
-            
+            ind = rand() % generate_from.size();
+            array.arr[k] = generate_from[ind];
+
+             generate_from.erase(generate_from.begin()+ind);
+          
             }
-        }
-    }
     return array;
 }
 
@@ -88,13 +86,13 @@ stack<position> environment::neighbours(position pos){
 
 }
 perception environment::display_envt(position agent_pos){
-    srand(time(0));
     pos_arr pos;  
     stack<position> neigh_stack;
     int t = 0;
     position popped_neighbour;
     perception env_perception;
     char ele[5] = {'G','W','P','P','P'};
+    srand(time(0));
     pos = generate_positions();
 
 
@@ -170,6 +168,19 @@ int environment::print_msg(string msg){
         cout<<"You won";
     return 0;
 }
+
+void delay(int number_of_seconds) 
+{ 
+    // Converting time into milli_seconds 
+    int milli_seconds = 1000 * number_of_seconds; 
+  
+    // Storing start time 
+    clock_t start_time = clock(); 
+  
+    // looping till required time is not achieved 
+    while (clock() < start_time + milli_seconds) 
+        ; 
+} 
 
 
 
