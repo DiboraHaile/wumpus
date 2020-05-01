@@ -1,12 +1,16 @@
+#pragma once
 #include <iostream>
 #include "environment.hpp"
+#include "agent.hpp"
 #include <stack>
 using namespace std;
 
-bool S[4][4], B[4][4];
+
 
 stack<position> neighbours(position pos);
-    
+ bool str_bool(string x);   
 void Rules(position pos_ele,char name);
-bool no_pit(position cur_pos);
-bool no_wumpus(position cur_pos);
+map<char, string> form_argument(position cur_pos,map<char,bool> a_hist);
+map<char,bool> return_history_pos(position current_val);
+string check_pit(position cur_pos, position neigh_pos,history a_hist);
+string check_wumpus(position cur_pos, position neigh_pos,history a_hist);
