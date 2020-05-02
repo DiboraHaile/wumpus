@@ -40,7 +40,5 @@ class environment{
 
     perception create_envt(position agent_pos);
 
-    void print_agent(position current_pos);
-
     int print_msg(string msg);
 };
