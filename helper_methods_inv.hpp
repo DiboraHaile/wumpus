@@ -1,4 +1,4 @@
-#include <iostream>
+#pragma once
 struct operand_vals{
         bool truth_vs[2];
         bool branch;
