@@ -1,10 +1,6 @@
 #include <iostream>
 #include "helper_methods_inv.hpp"
 
-struct operand_vals{
-        bool truth_vs[2];
-        bool branch;
-    };
 
 operand_vals helper_methods_inv::INot(bool result){
     int operand_no = 1;
