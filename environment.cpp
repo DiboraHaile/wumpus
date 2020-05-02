@@ -16,28 +16,34 @@ environment:: environment(){
     // creating an agent
     Agent my_agent = Agent();
     env_percept = create_envt(my_agent.current_pos);
-    int ji = 0;
-    //ji<2
-    //
+    loop:
    while(!my_agent.okay_rooms.empty()){
         
         ok_room_pos = my_agent.okay_rooms.top();
-        my_agent.current_pos = my_agent.Move(ok_room_pos);
         my_agent.okay_rooms.pop();
+        my_agent.current_pos = my_agent.Move(ok_room_pos);
+        my_agent.visited_rooms.push_back(ok_room_pos);
         my_agent.update_history(env_percept,my_agent.current_pos);
         my_agent.Decide(my_agent.agent_history,my_agent.current_pos);
+        
         //cout<<"\n"<<my_agent.okay_rooms.top().x<<my_agent.okay_rooms.top().y<<"\n";
         system("clear");
         //my_agent.visited_rooms.push()
         display_envt(env_percept,my_agent.current_pos);
-        delay(2000);
-        //cout<<"\n"<<my_agent.current_pos.x<<my_agent.current_pos.y<<flush;
-        
+         if (my_agent.agent_history.G[my_agent.current_pos.x][my_agent.current_pos.y] == "true")
+        my_agent.Actuates("gold");
+         else if (my_agent.agent_history.P[my_agent.current_pos.x][my_agent.current_pos.y] == "true")
+        my_agent.Actuates("pit");
+        else if (my_agent.agent_history.W[my_agent.current_pos.x][my_agent.current_pos.y] == "true")
+        my_agent.Actuates("wumpus");
+        delay(4000);
+    
    }
     // if out of this loop means okay rooms is empty
     // so we call decide with the element empty
-    my_agent.Actuates(my_agent.current_pos,"empty");
-     
+   
+    my_agent.Actuates("empty");
+    goto loop;
 }
 
 pos_arr environment::generate_positions(){
@@ -161,10 +167,6 @@ void display_envt(perception env, position cur_p){
     cout<<"\n\n\n";
 
 
-}
-void environment::print_agent(position current_pos){
-    grid[current_pos.x][current_pos.y] = "x";
-    cout<<grid[current_pos.x][current_pos.y];
 }
 
 int environment::print_msg(string msg){
